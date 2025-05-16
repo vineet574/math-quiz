@@ -19,3 +19,11 @@ High score tracking in a session.
 
 Randomized operator count based on difficulty.
 
+How to Use It:
+Run the program.
+
+Select difficulty.
+
+Answer questions quickly (within 10 seconds).
+
+Track your performance live.
