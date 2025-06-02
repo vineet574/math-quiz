@@ -49,3 +49,18 @@ What is 10 / 2? 5
 
 🏅 Session Leaderboard:
 #1: 18 pts
+
+
+
+Updated Features:
+Timer Countdown Display
+
+Sound-like Feedback (via text)
+
+Question History
+
+Session Summary at End
+
+Username Support
+
+Difficulty Level Display in Leaderboard
