@@ -1,16 +1,28 @@
 import java.util.*;
 
 public class Main {
+    static Scanner sc = new Scanner(System.in);
+    static List<String> questionHistory = new ArrayList<>();
+    static Map<String, Integer> playerScores = new HashMap<>();
+
     public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
         Random rand = new Random();
         int score = 0, correctCount = 0, wrongCount = 0, streak = 0;
         int highScore = 0;
         List<Integer> sessionScores = new ArrayList<>();
 
-        System.out.println("🧠 Welcome to the Math Quiz!");
+        System.out.print("👤 Enter your name: ");
+        String username = sc.nextLine();
+
+        System.out.println("🧠 Welcome to the Math Quiz, " + username + "!");
         System.out.println("Choose difficulty level: (1) Easy  (2) Medium  (3) Hard");
         int level = sc.nextInt();
+        String levelName = switch (level) {
+            case 1 -> "Easy";
+            case 2 -> "Medium";
+            case 3 -> "Hard";
+            default -> "Medium";
+        };
         int maxNum = switch (level) {
             case 1 -> 10;
             case 2 -> 20;
@@ -28,7 +40,7 @@ public class Main {
             int correct;
             String symbol;
             if (op == 3) {
-                while (a % b != 0) {
+                while (b == 0 || a % b != 0) {
                     a = rand.nextInt(maxNum) + 1;
                     b = rand.nextInt(maxNum) + 1;
                 }
@@ -47,7 +59,8 @@ public class Main {
                 };
             }
 
-            System.out.print("What is " + a + " " + symbol + " " + b + "? ");
+            String question = a + " " + symbol + " " + b;
+            System.out.print("What is " + question + "? ");
 
             long startTime = System.currentTimeMillis();
             int ans;
@@ -65,8 +78,11 @@ public class Main {
                 System.out.println("✅ Correct: " + correctCount + " ❌ Wrong: " + wrongCount);
                 System.out.println("🔥 Highest Score This Session: " + highScore);
                 sessionScores.add(score);
+                playerScores.put(username + " (" + levelName + ")", score);
+
                 gradeReport(score, correctCount + wrongCount);
-                printLeaderboard(sessionScores);
+                printHistory();
+                printLeaderboard(playerScores);
                 break;
             }
 
@@ -74,6 +90,7 @@ public class Main {
                 System.out.println("⏰ Time's up! The correct answer was: " + correct);
                 wrongCount++;
                 streak = 0;
+                questionHistory.add("❌ " + question + " = " + correct + " (Too Slow)");
             } else if (ans == correct) {
                 streak++;
                 int bonus = (streak >= 3) ? 2 : 1;
@@ -82,10 +99,12 @@ public class Main {
                 score += bonus;
                 correctCount++;
                 highScore = Math.max(highScore, score);
+                questionHistory.add("✅ " + question + " = " + correct);
             } else {
                 System.out.println("❌ Wrong! The correct answer was: " + correct);
                 wrongCount++;
                 streak = 0;
+                questionHistory.add("❌ " + question + " = " + correct + " (Your answer: " + ans + ")");
             }
         }
 
@@ -99,11 +118,17 @@ public class Main {
         System.out.printf("📊 Your Accuracy: %.1f%% - Grade: %c\n", percent, grade);
     }
 
-    static void printLeaderboard(List<Integer> scores) {
-        System.out.println("\n🏅 Session Leaderboard:");
-        scores.sort(Collections.reverseOrder());
-        for (int i = 0; i < scores.size(); i++) {
-            System.out.println("#" + (i + 1) + ": " + scores.get(i) + " pts");
+    static void printHistory() {
+        System.out.println("\n📝 Question History:");
+        for (String q : questionHistory) {
+            System.out.println(q);
         }
+    }
+
+    static void printLeaderboard(Map<String, Integer> scores) {
+        System.out.println("\n🏅 Session Leaderboard:");
+        scores.entrySet().stream()
+            .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+            .forEach(entry -> System.out.println(entry.getKey() + ": " + entry.getValue() + " pts"));
     }
 }
